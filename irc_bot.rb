@@ -9,12 +9,6 @@ require_relative './irc_bot_methods.rb'
 @horse_general_information
 @lameness_diagnostic_program = 0
 @lameness_diagnostic_state
-# This method gets called, whenever a message is sent to our IRC channel. In it you can react to
-# the users' inputs in whatever way you like...
-
-
-
-
 
 def handle_channel_message(message)
   if message.include?("return")
@@ -35,13 +29,11 @@ def handle_channel_message(message)
   
   if @tree_level ==1 && message.downcase.include?("colic")
     @chosen_problem = :colic
+    handle_message_colic
+    @tree_level = 2
   end
   
   if @chosen_problem == :colic
-    if @tree_level==1 && message.downcase.include?("colic")
-      handle_message_colic(message)
-      @tree_level = 2
-    end
     if @tree_level ==2 && message.downcase.include?("yes")
       colic_likely(message)
       @tree_level = 3
@@ -57,13 +49,11 @@ def handle_channel_message(message)
   #lameness
   if @tree_level ==1 && message.downcase.include?("lameness")
     @chosen_problem = :lameness
+    handle_message_lameness(message)
+    @tree_level = 2
+    @repetition_lameness = 1
   end
   if @chosen_problem == :lameness
-    if @tree_level ==1 && message.downcase.include?("lameness")
-      handle_message_lameness(message)
-      @tree_level = 2
-      @repetition_lameness = 1
-    end
      if @tree_level ==2  && (message.downcase.include?("program") == false || message.downcase.include?("diagnostic") == false) && (message.include?("information") == true ||@repetition_lameness == 2)
       lameness_information_quiz(message)
       @tree_level = 3
@@ -82,39 +72,29 @@ def handle_channel_message(message)
       @tree_level = 2
       @repetition_lameness = 2
     end
-   
-    if @tree_level ==3 && @lameness_diagnostic_program == 1 && (message.include?("diagnostic") == false || message.include?("program") == false)
-      program_ld_anamnesis(message)
-      @lameness_diagnostic_state= :general_information
-    end
-    if @lameness_diagnostic_program == 1 && message.include?("back")
-      program_lameness_diagnostic(message)
-    end
-    if @tree_level ==3 && @lameness_diagnostic_program == 1 && (message.include?("diagnostic") == false || message.include?("program") == false)
-      program_ld_anamnesis(message)
-      @lameness_diagnostic_state= :general_information
+    if  @lameness_diagnostic_program == 1
+      if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false)
+        program_ld_anamnesis(message)
+        @lameness_diagnostic_state= :general_information
+      end
+      if @lameness_diagnostic_program == 1 && message.include?("back")
+        program_lameness_diagnostic(message)
+      end
+      if @tree_level ==3  && (message.include?("diagnostic") == false || message.include?("program") == false)
+        program_ld_anamnesis(message)
+        @lameness_diagnostic_state= :general_information
+      end
     end
   end
 
-
-
-
-
-
-
-  # Implement your ideas here. 
-  # The string in `message` will look something like this: 
   # ":nerdinand!b2c5e1f5@gateway/web/freenode/ip.178.197.225.245 PRIVMSG #rubymonstas :Look at me, I'm here!"
-  
-  
-
-  # You can use the method `irc_send` to send strings to the IRC server, e.g.
-  
 end
 
 
 require_relative './irc_magic.rb'
 
+
+#change if if if to elsif
 
 
 

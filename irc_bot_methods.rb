@@ -1,4 +1,4 @@
-def handle_message_colic(message)
+def handle_message_colic
   irc_send("PRIVMSG #rubymonstas :Here's further information on colics.")
   irc_send("PRIVMSG #rubymonstas :This is the definition of colic in the horse from wikipedia:")
   irc_send("PRIVMSG #rubymonstas :Colic in horses is defined as abdominal pain, but it is a clinical symptom rather than a diagnosis. The term colic can encompass all forms of gastrointestinal conditions which cause pain as well as other causes of abdominal pain not involving the gastrointestinal tract.")
