@@ -35,26 +35,29 @@ def handle_message_lameness(message)
     irc_send("PRIVMSG #rubymonstas :You chose lameness. ")
     irc_send("PRIVMSG #rubymonstas :This is the definition of lameness by the american college of equine surgeons: ")
     irc_send("PRIVMSG #rubymonstas :Lameness refers to an abnormality of a horse’s gait or stance. It can be caused by pain, a mechanical problem, or a neurological condition. 'Lameness, most commonly results from pain in the musculoskeletal system (muscles, tendons, ligaments, bones, or joints) leading to abnormal movement at the walk, trot, or canter.' ")
+    irc_send("PRIVMSG #rubymonstas :Would you like to start the lameness diagnostic program or would you prefer to just be given some further information to read up on lameness?")
   end
+  @chosen_problem = :lameness
+end
+
+def lameness_information_quiz(message)
   irc_send("PRIVMSG #rubymonstas :There are three different causes for lameness:")
   irc_send("PRIVMSG #rubymonstas :Pain: due to pain, the horse can alter the load on the injured leg and this can cause irregularity in the gait.")
   irc_send("PRIVMSG #rubymonstas :Mechanical lameness: This is not caused by pain but rather by mechanical issues. Examples for this are patellar fixation or abnormal gait due to scar tissue. ")
   irc_send("PRIVMSG #rubymonstas :Neurological lameness: Nerval damage hinders the horse from moving in a normal way.")
   irc_send("PRIVMSG #rubymonstas :What do you think, which cause is the most common?")
-  @chosen_problem = :lameness
 end
-
 def lameness_pain(message)
   irc_send("PRIVMSG #rubymonstas :You are correct, pain is the most common cause of lameness. ")
   irc_send("PRIVMSG #rubymonstas :The severity of the symptoms in lameness can vary: in severe cases, horses often refrain from bearing any weight on the affected limbs, while in light cases, sometimes a slight head bobbing in trot can be the only visible sign.")
-  irc_send("PRIVMSG #rubymonstas :Would you like to start the lameness diagnostic program or would you prefer to just be given some further information to read up on lameness?")
+  
   
 end
 
 def lameness_wrong_answer(message)
   irc_send("PRIVMSG #rubymonstas :You are incorrect, this is not the most common cause of lameness.")
   irc_send("PRIVMSG #rubymonstas :You should give it another try!")
-  handle_message_lameness(message)
+  lameness_information_quiz(message)
 end
 
 def program_lameness_diagnostic(message)
@@ -64,10 +67,14 @@ def program_lameness_diagnostic(message)
 end
 
 def program_ld_anamnesis(message)
+  irc_send("PRIVMSG #rubymonstas :You entered:")
+  irc_send(message)
+  irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)")
   @horse_general_information = "#{message.split[3]}  #{message.split[4]} #{message.split[5]} #{message.split[6]}"
   irc_send("PRIVMSG #rubymonstas :#{@horse_general_information}")
   irc_send("PRIVMSG #rubymonstas :Now it is time for some specific information on the lameness of your horse.")
-  irc_send("PRIVMSG #rubymonstas :")
+
 end
 
 
+#irc_send("PRIVMSG #rubymonstas :")

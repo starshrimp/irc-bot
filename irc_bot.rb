@@ -8,6 +8,7 @@ require_relative './irc_bot_methods.rb'
 @repetition_lameness = 0
 @horse_general_information
 @lameness_diagnostic_program = 0
+@lameness_diagnostic_state
 # This method gets called, whenever a message is sent to our IRC channel. In it you can react to
 # the users' inputs in whatever way you like...
 
@@ -26,7 +27,6 @@ def handle_channel_message(message)
     irc_send("PRIVMSG #rubymonstas :I can help you with the following frequent issues in equine medicine: Colic, Lameness, Wounds ")
     irc_send("PRIVMSG #rubymonstas :Enter your issue")
     irc_send("PRIVMSG #rubymonstas :If at any point of the program you want to start over, enter return.")
-    @tree_level = 1
     @tree_level = 1
   end
 
@@ -64,21 +64,35 @@ def handle_channel_message(message)
       @tree_level = 2
       @repetition_lameness = 1
     end
-    if @tree_level ==2 && message.downcase.include?("pain")
-      lameness_pain(message)
+     if @tree_level ==2  && (message.downcase.include?("program") == false || message.downcase.include?("diagnostic") == false) && (message.include?("information") == true ||@repetition_lameness == 2)
+      lameness_information_quiz(message)
       @tree_level = 3
     end
-    if @tree_level ==2 && (message.downcase.include?("mechanical") || message.downcase.include?("neurological"))
-      lameness_wrong_answer(message)
-      @tree_level = 2
-    end
-    if @tree_level ==3 && (message.downcase.include?("program") || message.downcase.include?("diagnostic"))
+    if @tree_level ==2 && (message.downcase.include?("program") || message.downcase.include?("diagnostic"))
       program_lameness_diagnostic(message)
-      @tree_level = 4
+      @tree_level = 3
       @lameness_diagnostic_program = 1
     end
-    if @tree_level ==4 && @lameness_diagnostic_program == 1 && (message.include?("diagnostic") == false || message.include?("program") == false)
+    if @tree_level ==3 && message.downcase.include?("pain")
+      lameness_pain(message)
+      @tree_level = 4
+    end
+    if @tree_level ==3 && (message.downcase.include?("mechanical") || message.downcase.include?("neurological"))
+      lameness_wrong_answer(message)
+      @tree_level = 2
+      @repetition_lameness = 2
+    end
+   
+    if @tree_level ==3 && @lameness_diagnostic_program == 1 && (message.include?("diagnostic") == false || message.include?("program") == false)
       program_ld_anamnesis(message)
+      @lameness_diagnostic_state= :general_information
+    end
+    if @lameness_diagnostic_program == 1 && message.include?("back")
+      program_lameness_diagnostic(message)
+    end
+    if @tree_level ==3 && @lameness_diagnostic_program == 1 && (message.include?("diagnostic") == false || message.include?("program") == false)
+      program_ld_anamnesis(message)
+      @lameness_diagnostic_state= :general_information
     end
   end
 
