@@ -1,18 +1,100 @@
 # customize the name of your bot on the following line
-@name = "Sarah-Bot"
+require_relative './irc_bot_methods.rb'
 
-# This method gets called, whenever a message is sent to our IRC channel. In it you can react to
-# the users' inputs in whatever way you like...
+@name = "EquineVetBot"
+
+@chosen_problem = :none
+@tree_level = 0
+@repetition_lameness = 0
+@horse_general_information
+@lameness_diagnostic_program = 0
+@lameness_diagnostic_state
+
 def handle_channel_message(message)
-  # Implement your ideas here. 
-  # The string in `message` will look something like this: 
-  # ":nerdinand!b2c5e1f5@gateway/web/freenode/ip.178.197.225.245 PRIVMSG #rubymonstas :Look at me, I'm here!"
-  p message.split[3]
-  if message.split[3] == ":hello"
-    irc_send("PRIVMSG #rubymonstas #{message.split[3]}")
+  if message.include?("return")
+    @tree_level = 0
+    @chosen_problem = :none
   end
-  # You can use the method `irc_send` to send strings to the IRC server, e.g.
-  irc_send("PRIVMSG #rubymonstas :Hi everyone!")
+  if @tree_level == 0
+    p message.split[3]
+    irc_send("PRIVMSG #rubymonstas :Hello and welcome to the EquineVetBot. What is your emergency?")
+    irc_send("PRIVMSG #rubymonstas :I can help you with the following frequent issues in equine medicine: Colic, Lameness, Wounds ")
+    irc_send("PRIVMSG #rubymonstas :Enter your issue")
+    irc_send("PRIVMSG #rubymonstas :If at any point of the program you want to start over, enter return.")
+    @tree_level = 1
+  end
+
+
+  #colic
+  
+  if @tree_level ==1 && message.downcase.include?("colic")
+    @chosen_problem = :colic
+    handle_message_colic
+    @tree_level = 2
+  end
+  
+  if @chosen_problem == :colic
+    if @tree_level ==2 && message.downcase.include?("yes")
+      colic_likely(message)
+      @tree_level = 3
+    end
+    if @tree_level ==2 && message.downcase.include?("no")
+      colic_unlikely(message)
+    end
+    if @tree_level ==3 && message.downcase.include?("therapy")
+      colic_therapy(message)
+    end
+  end
+
+  #lameness
+  if @tree_level ==1 && message.downcase.include?("lameness")
+    @chosen_problem = :lameness
+    handle_message_lameness(message)
+    @tree_level = 2
+    @repetition_lameness = 1
+  end
+  if @chosen_problem == :lameness
+     if @tree_level ==2  && (message.downcase.include?("program") == false || message.downcase.include?("diagnostic") == false) && (message.include?("information") == true ||@repetition_lameness == 2)
+      lameness_information_quiz(message)
+      @tree_level = 3
+    end
+    if @tree_level ==2 && (message.downcase.include?("program") || message.downcase.include?("diagnostic"))
+      program_lameness_diagnostic(message)
+      @tree_level = 3
+      @lameness_diagnostic_program = 1
+    end
+    if @tree_level ==3 && message.downcase.include?("pain")
+      lameness_pain(message)
+      @tree_level = 4
+    end
+    if @tree_level ==3 && (message.downcase.include?("mechanical") || message.downcase.include?("neurological"))
+      lameness_wrong_answer(message)
+      @tree_level = 2
+      @repetition_lameness = 2
+    end
+    if  @lameness_diagnostic_program == 1
+      if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false)
+        program_ld_anamnesis(message)
+        @lameness_diagnostic_state= :general_information
+      end
+      if @lameness_diagnostic_program == 1 && message.include?("back")
+        program_lameness_diagnostic(message)
+      end
+      if @tree_level ==3  && (message.include?("diagnostic") == false || message.include?("program") == false)
+        program_ld_anamnesis(message)
+        @lameness_diagnostic_state= :general_information
+      end
+    end
+  end
+
+  # ":nerdinand!b2c5e1f5@gateway/web/freenode/ip.178.197.225.245 PRIVMSG #rubymonstas :Look at me, I'm here!"
 end
 
+
 require_relative './irc_magic.rb'
+
+
+#change if if if to elsif
+
+
+
