@@ -32,7 +32,7 @@ end
 
 def handle_message_lameness(message)
   if @repetition_lameness == 0
-    irc_send("PRIVMSG #rubymonstas :You chose lameness. ")
+    irc_send("PRIVMSG #rubymonstas :You entered lameness. ")
     irc_send("PRIVMSG #rubymonstas :This is the definition of lameness by the american college of equine surgeons: ")
     irc_send("PRIVMSG #rubymonstas :Lameness refers to an abnormality of a horse’s gait or stance. It can be caused by pain, a mechanical problem, or a neurological condition. 'Lameness, most commonly results from pain in the musculoskeletal system (muscles, tendons, ligaments, bones, or joints) leading to abnormal movement at the walk, trot, or canter.' ")
     irc_send("PRIVMSG #rubymonstas :Would you like to start the lameness diagnostic program or would you prefer to just be given some further information to read up on lameness?")
@@ -169,13 +169,14 @@ def program_ld_finished(message)
   @horse_othersigns = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
   irc_send("PRIVMSG #rubymonstas :#{@horse_othersigns}")
-  irc_send("PRIVMSG #rubymonstas :If this information is incorrect, type back to correct it. If it's correct: are you ready fot the summary of the information you entered?") #add back feature
+  irc_send("PRIVMSG #rubymonstas :If this information is incorrect, type back to correct it. If it's correct: are you ready for a summary of the information you entered?") #add back feature
 end
 def program_ld_summary(message)
   sleep(1)
   irc_send("PRIVMSG #rubymonstas :Here is a summary of the information you entered:")
   irc_send("PRIVMSG #rubymonstas :1: General information on your horse: #{@horse_general_information}")
   irc_send("PRIVMSG #rubymonstas :2: Your horse's medical history: #{@horse_history}")
+  sleep(1)
   irc_send("PRIVMSG #rubymonstas :3: The duration of the lameness: #{@horse_duration}")
   irc_send("PRIVMSG #rubymonstas :4: The severity of the lameness: #{@horse_severity}")
   irc_send("PRIVMSG #rubymonstas :5: The location of the lameness: #{@horse_location}")
@@ -183,17 +184,45 @@ def program_ld_summary(message)
   irc_send("PRIVMSG #rubymonstas :6: Your horse's exercise routine: #{@horse_routine}")
   irc_send("PRIVMSG #rubymonstas :7: The environment your horse is ridden in: #{@horse_environment}")
   irc_send("PRIVMSG #rubymonstas :8: Your horse's hoofcare: #{@horse_hoofcare}")
+  sleep(1)
   irc_send("PRIVMSG #rubymonstas :9: Recent injuries or trauma: #{@horse_recentinjuries}")
   irc_send("PRIVMSG #rubymonstas :10: Previous therapy administered: #{@horse_previoustherapy}")
   irc_send("PRIVMSG #rubymonstas :11: Other signs and symptoms: #{@horse_othersigns}")
   sleep(1)
-  irc_send("PRIVMSG #rubymonstas :If you'd like to correct one of your answers, enter the number of the inco correct it.)") #add back feature
-  irc_send("PRIVMSG #rubymonstas :The lameness diagnostic program is now finished.")
+  irc_send("PRIVMSG #rubymonstas :If you'd like to correct one of your answers, enter the number of the incorrect information to correct it.") #add back feature
+  irc_send("PRIVMSG #rubymonstas :The lameness diagnostic program is now finished. Type return to go back to the start of the EquineBotProgram.")
 end
 
+###
 def check_for_corrections(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
   @corrector = split_string[1]
+  if @corrector.include?("1") && (message.include?("01") == false) && (message.include?("11")== false)
+    program_lameness_diagnostic(message)
+  elsif @corrector.include?("2") 
+    
+  elsif @corrector.include?("3") 
+    program_ld_duration(message)
+  elsif @corrector.include?("4") 
+    program_ld_severity(message)
+  elsif @corrector.include?("5") 
+    program_ld_location(message)
+  elsif @corrector.include?("6") 
+    program_ld_routine(message)
+  elsif @corrector.include?("7") 
+    program_ld_environment(message)
+  elsif @corrector.include?("8") 
+    program_ld_hoofcare(message)
+  elsif @corrector.include?("9") 
+    program_ld_recentinjuries(message)
+  elsif @corrector.include?("10") 
+    program_ld_previoustherapy(message)
+  elsif @corrector.include?("11") 
+    program_ld_othersigns(message)
+  end
+  sleep (3)
+  program_ld_summary(message)
 end
+###
 #irc_send("PRIVMSG #rubymonstas :")

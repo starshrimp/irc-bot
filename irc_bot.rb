@@ -19,6 +19,7 @@ require_relative './irc_bot_methods.rb'
 @horse_recentinjuries
 @horse_previoustherapy
 @horse_othersigns
+@corrector
 
 def handle_channel_message(message)
   if message.include?("return")
@@ -117,6 +118,10 @@ def handle_channel_message(message)
       @lameness_diagnostic_state= :finished
       elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:finished
       program_ld_summary(message)
+      @lameness_diagnostic_state= :corrections
+      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:corrections
+      check_for_corrections(message)
+      
       end
     end
   end
