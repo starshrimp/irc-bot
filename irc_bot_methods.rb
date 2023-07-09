@@ -199,30 +199,30 @@ def check_for_corrections(message)
   split_string = message.split(delimiter, 2)
   @corrector = split_string[1]
   if @corrector.include?("1") && (message.include?("01") == false) && (message.include?("11")== false)
-    program_lameness_diagnostic(message)
+    @lameness_diagnostic_state = :general_information
   elsif @corrector.include?("2") 
-    
+    @lameness_diagnostic_state = :history
   elsif @corrector.include?("3") 
-    program_ld_duration(message)
+    @lameness_diagnostic_state = :duration
   elsif @corrector.include?("4") 
-    program_ld_severity(message)
+    @lameness_diagnostic_state = :severity
   elsif @corrector.include?("5") 
-    program_ld_location(message)
+    @lameness_diagnostic_state = :location
   elsif @corrector.include?("6") 
-    program_ld_routine(message)
+    @lameness_diagnostic_state = :routine
   elsif @corrector.include?("7") 
-    program_ld_environment(message)
+    @lameness_diagnostic_state = :environment
   elsif @corrector.include?("8") 
-    program_ld_hoofcare(message)
+    @lameness_diagnostic_state = :hoofcare
   elsif @corrector.include?("9") 
-    program_ld_recentinjuries(message)
+    @lameness_diagnostic_state = :recentinjuries
   elsif @corrector.include?("10") 
-    program_ld_previoustherapy(message)
+    @lameness_diagnostic_state = :previoustherapy
   elsif @corrector.include?("11") 
-    program_ld_othersigns(message)
-  end
+    @lameness_diagnostic_state = :othersigns
+  end # the diagnostic states have to be moved by one!!!!
   sleep (3)
-  program_ld_summary(message)
+  irc_send("PRIVMSG #rubymonstas :#{@lameness_diagnostic_state}")
 end
 ###
 #irc_send("PRIVMSG #rubymonstas :")

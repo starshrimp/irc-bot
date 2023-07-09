@@ -21,11 +21,15 @@ require_relative './irc_bot_methods.rb'
 @horse_othersigns
 @corrector
 
+
 def handle_channel_message(message)
   if message.include?("return")
     @tree_level = 0
     @chosen_problem = :none
     @repetition_lameness = 0
+  end
+  if @lameness_diagnostic_state==:corrections
+    check_for_corrections(message)
   end
   if @tree_level == 0
     p message.split[3]
@@ -80,48 +84,46 @@ def handle_channel_message(message)
       @tree_level = 2
       @repetition_lameness = 2
     
-    elsif @lameness_diagnostic_program == 1
+    elsif @lameness_diagnostic_program == 1 && @tree_level ==3
       if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state== :start
         program_ld_history(message)
         @lameness_diagnostic_state= :history
       elsif @lameness_diagnostic_program == 1 && message.include?("back")
         program_lameness_diagnostic(message)
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:history
+      elsif @lameness_diagnostic_state==:history
       program_ld_duration(message)
       @lameness_diagnostic_state=:duration
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:duration
+      elsif @lameness_diagnostic_state==:duration
       program_ld_severity(message)
       @lameness_diagnostic_state= :severity
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:severity
+      elsif @lameness_diagnostic_state==:severity
       program_ld_location(message)
       @lameness_diagnostic_state= :location
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:location
+      elsif @lameness_diagnostic_state==:location
       program_ld_routine(message)
       @lameness_diagnostic_state= :routine
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:routine
+      elsif @lameness_diagnostic_state==:routine
       program_ld_environment(message)
       @lameness_diagnostic_state= :environment
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:environment
+      elsif @lameness_diagnostic_state==:environment
       program_ld_hoofcare(message)
       @lameness_diagnostic_state= :hoofcare
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:hoofcare
+      elsif @lameness_diagnostic_state==:hoofcare
       program_ld_recentinjuries(message)
       @lameness_diagnostic_state= :recentinjuries
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:recentinjuries
+      elsif @lameness_diagnostic_state==:recentinjuries
       program_ld_previoustherapy(message)
       @lameness_diagnostic_state= :previoustherapy
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:previoustherapy
+      elsif @lameness_diagnostic_state==:previoustherapy
       program_ld_othersigns(message)
       @lameness_diagnostic_state= :othersigns
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:othersigns
+      elsif @lameness_diagnostic_state==:othersigns
       program_ld_finished(message)
       @lameness_diagnostic_state= :finished
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:finished
+      elsif @lameness_diagnostic_state==:finished
       program_ld_summary(message)
       @lameness_diagnostic_state= :corrections
-      elsif @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state==:corrections
-      check_for_corrections(message)
-      
+
       end
     end
   end
