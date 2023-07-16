@@ -88,11 +88,13 @@ def handle_channel_message(message)
       if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state== :start
         program_ld_history(message)
         @lameness_diagnostic_state= :history
-      elsif @lameness_diagnostic_program == 1 && message.include?("back")
+      elsif @lameness_diagnostic_state == :history && message.include?("back")
         program_lameness_diagnostic(message)
       elsif @lameness_diagnostic_state==:history
       program_ld_duration(message)
       @lameness_diagnostic_state=:duration
+    elsif @lameness_diagnostic_state == :duration && message.include?("back")
+      program_ld_duration(message) # where I left off: implementing the back function. possibly with a state and in a separate elsif...? 
       elsif @lameness_diagnostic_state==:duration
       program_ld_severity(message)
       @lameness_diagnostic_state= :severity
@@ -133,9 +135,6 @@ end
 
 
 require_relative './irc_magic.rb'
-
-
-#change if if if to elsif
 
 
 
