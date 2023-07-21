@@ -128,7 +128,6 @@ def handle_channel_message(message)
           program_lameness_diagnostic(message)
         elsif @lameness_diagnostic_state == :duration
           program_ld_duration(message)
-        end
         elsif @lameness_diagnostic_state == :duration
           program_ld_duration(message)
         end

@@ -69,9 +69,10 @@ end
 def program_ld_history(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_general_information = split_string[1]
+  @patient = Horse.new(split_string[1])
+  #@patient.signalement(split_string[1])
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_general_information}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.signalement}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   
   irc_send("PRIVMSG #rubymonstas :Now it is time for some specific information on the lameness of your horse. Let's get started on your horse's history.")
@@ -81,9 +82,9 @@ end
 def program_ld_duration(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_history = split_string[1]
+  @patient.history= split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_history}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.history}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :Let's continue with some information on the onset and duration of the current lameness.")
   irc_send("PRIVMSG #rubymonstas :When did the current bout of lameness start and did it start gradually or suddenly?")
@@ -92,9 +93,9 @@ end
 def program_ld_severity(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_duration = split_string[1]
+  @patient.duration= split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_duration}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.duration}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :I'd like to know some information on the severity of the current lameness.")
   irc_send("PRIVMSG #rubymonstas :Can you rate the severity of lameness? How did it progress over time? Are there any activities or circumstances that exacerbate or alleviate the lameness?")
@@ -102,63 +103,63 @@ end
 def program_ld_location(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_severity = split_string[1]
+  @patient.severity = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_severity}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.severity}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :Let's continue with some details on the location of the current lameness. Can you identify which leg the horse is lame on? To do this, you can walk or trot your horse up. Do you notice abnormal limb placement, irregular gait or even reduced load of a limb while standing?")
 end
 def program_ld_routine(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_location = split_string[1]
+  @patient.location = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_location}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.location}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :What about your horse's exercise routine? Elaborate on the following information: type, duration, and frequency of exercise, as well as the amount of rest provided?")
 end
 def program_ld_environment(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_routine = split_string[1]
+  @patient.routine = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_routine}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.routine}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :The type of footing your horse is regularly exercised on can be very important factors in lameness development. On what ground is your horse typically being ridden on? Were there any recent changes in the environment?")
 end
 def program_ld_hoofcare(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_environment = split_string[1]
+  @patient.environment = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_environment}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.environment}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :What is your horse's hoof care routine? Are they shoed or barefoot? How often does the farrier come to trim the hooves or replace the shoeing? Were there any recent changes in hoof care?")
 end
 def program_ld_recentinjuries(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_hoofcare = split_string[1]
+  @patient.hoofcare = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_hoofcare}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.hoofcare}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :Did your horse experience any recent injuries, falls, or other traumatic events that may be related to the lameness?")
 end
 def program_ld_previoustherapy(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_recentinjuries = split_string[1]
+  @patient.recentinjuries = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_recentinjuries}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.recentinjuries}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :Did your horse receive any previous treatments, medications, or therapies for the lameness? If so, how did your horse react to them?")
 end
 def program_ld_othersigns(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_previoustherapy = split_string[1]
+  @patient.previoustherapy = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_previoustherapy}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.previoustherapy}")
   irc_send("PRIVMSG #rubymonstas :(if this information is incorrect, type back to correct it.)") #add back feature
   irc_send("PRIVMSG #rubymonstas :Did you notice any additional signs or symptoms the horse has been exhibiting, such as swelling, heat, changes in behavior, or changes in appetite?")
 end
@@ -166,28 +167,28 @@ end
 def program_ld_finished(message)
   delimiter ="#rubymonstas :"
   split_string = message.split(delimiter, 2)
-  @horse_othersigns = split_string[1]
+  @patient.othersigns = split_string[1]
   irc_send("PRIVMSG #rubymonstas :You entered:")
-  irc_send("PRIVMSG #rubymonstas :#{@horse_othersigns}")
+  irc_send("PRIVMSG #rubymonstas :#{@patient.othersigns}")
   irc_send("PRIVMSG #rubymonstas :If this information is incorrect, type back to correct it. If it's correct: are you ready for a summary of the information you entered?") #add back feature
 end
 def program_ld_summary(message)
   sleep(1)
   irc_send("PRIVMSG #rubymonstas :Here is a summary of the information you entered:")
-  irc_send("PRIVMSG #rubymonstas :1: General information on your horse: #{@horse_general_information}")
-  irc_send("PRIVMSG #rubymonstas :2: Your horse's medical history: #{@horse_history}")
+  irc_send("PRIVMSG #rubymonstas :1: General information on your horse: #{@patient.signalement}")
+  irc_send("PRIVMSG #rubymonstas :2: Your horse's medical history: #{@patient.history}")
   sleep(1)
-  irc_send("PRIVMSG #rubymonstas :3: The duration of the lameness: #{@horse_duration}")
-  irc_send("PRIVMSG #rubymonstas :4: The severity of the lameness: #{@horse_severity}")
-  irc_send("PRIVMSG #rubymonstas :5: The location of the lameness: #{@horse_location}")
+  irc_send("PRIVMSG #rubymonstas :3: The duration of the lameness: #{@patient.duration}")
+  irc_send("PRIVMSG #rubymonstas :4: The severity of the lameness: #{@patient.severity}")
+  irc_send("PRIVMSG #rubymonstas :5: The location of the lameness: #{@patient.location}")
   sleep(1)
-  irc_send("PRIVMSG #rubymonstas :6: Your horse's exercise routine: #{@horse_routine}")
-  irc_send("PRIVMSG #rubymonstas :7: The environment your horse is ridden in: #{@horse_environment}")
-  irc_send("PRIVMSG #rubymonstas :8: Your horse's hoofcare: #{@horse_hoofcare}")
+  irc_send("PRIVMSG #rubymonstas :6: Your horse's exercise routine: #{@patient.routine}")
+  irc_send("PRIVMSG #rubymonstas :7: The environment your horse is ridden in: #{@patient.environment}")
+  irc_send("PRIVMSG #rubymonstas :8: Your horse's hoofcare: #{@patient.hoofcare}")
   sleep(1)
-  irc_send("PRIVMSG #rubymonstas :9: Recent injuries or trauma: #{@horse_recentinjuries}")
-  irc_send("PRIVMSG #rubymonstas :10: Previous therapy administered: #{@horse_previoustherapy}")
-  irc_send("PRIVMSG #rubymonstas :11: Other signs and symptoms: #{@horse_othersigns}")
+  irc_send("PRIVMSG #rubymonstas :9: Recent injuries or trauma: #{@patient.recentinjuries}")
+  irc_send("PRIVMSG #rubymonstas :10: Previous therapy administered: #{@patient.previoustherapy}")
+  irc_send("PRIVMSG #rubymonstas :11: Other signs and symptoms: #{@patient.othersigns}")
   sleep(1)
   irc_send("PRIVMSG #rubymonstas :If you'd like to correct one of your answers, enter the number of the incorrect information to correct it.") #add back feature
   irc_send("PRIVMSG #rubymonstas :The lameness diagnostic program is now finished. Type return to go back to the start of the EquineBotProgram.")

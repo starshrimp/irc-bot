@@ -1,6 +1,7 @@
 class Horse
- def initialize
-  @signalement
+  attr_accessor :signalement, :history, :duration, :severity, :location, :routine, :environment, :hoofcare, :recentinjuries, :previoustherapy, :othersigns
+ def initialize(signalement)
+  @signalement = signalement
   @history
   @duration
   @severity
@@ -12,3 +13,8 @@ class Horse
   @previoustherapy
   @othersigns
  end
+ 
+ 
+
+
+end
