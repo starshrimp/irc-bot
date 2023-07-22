@@ -76,7 +76,7 @@ def handle_channel_message(message)
       program_lameness_diagnostic(message)
       @tree_level = 3
       @lameness_diagnostic_program = 1
-      @lameness_diagnostic_state= :start
+      @state = Diagnostic_state.new(:signalement)
     elsif @tree_level ==3 && message.downcase.include?("pain")
       lameness_pain(message)
       @tree_level = 4
@@ -86,42 +86,42 @@ def handle_channel_message(message)
       @repetition_lameness = 2
     
     elsif @lameness_diagnostic_program == 1 && @tree_level ==3
-      if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false) && @lameness_diagnostic_state== :start
+      if @state.current_state == :signalement #left off here, implementing class state feature
         program_ld_history(message)
-        @lameness_diagnostic_state= :history
-      elsif @lameness_diagnostic_state==:history
+        @state.current_state = :history
+      elsif @state.current_state == :history
       program_ld_duration(message)
-      @lameness_diagnostic_state=:duration 
-      elsif @lameness_diagnostic_state==:duration
+      @state.current_state = :duration
+      elsif  @state.current_state == :duration
       program_ld_severity(message)
-      @lameness_diagnostic_state= :severity
-      elsif @lameness_diagnostic_state==:severity
+      @state.current_state = :severity
+      elsif  @state.current_state == :severity
       program_ld_location(message)
-      @lameness_diagnostic_state= :location
-      elsif @lameness_diagnostic_state==:location
+      @state.current_state = :location
+      elsif  @state.current_state == :location
       program_ld_routine(message)
-      @lameness_diagnostic_state= :routine
-      elsif @lameness_diagnostic_state==:routine
+      @state.current_state = :routine
+      elsif  @state.current_state == :routine
       program_ld_environment(message)
-      @lameness_diagnostic_state= :environment
-      elsif @lameness_diagnostic_state==:environment
+      @state.current_state = :environment
+      elsif  @state.current_state == :environment
       program_ld_hoofcare(message)
-      @lameness_diagnostic_state= :hoofcare
-      elsif @lameness_diagnostic_state==:hoofcare
+      @state.current_state = :hoofcare
+      elsif  @state.current_state == :hoofcare
       program_ld_recentinjuries(message)
-      @lameness_diagnostic_state= :recentinjuries
-      elsif @lameness_diagnostic_state==:recentinjuries
+      @state.current_state = :recentinjuries
+      elsif  @state.current_state == :recentinjuries
       program_ld_previoustherapy(message)
-      @lameness_diagnostic_state= :previoustherapy
-      elsif @lameness_diagnostic_state==:previoustherapy
+      @state.current_state = :previoustherapy
+      elsif  @state.current_state == :previoustherapy
       program_ld_othersigns(message)
-      @lameness_diagnostic_state= :othersigns
-      elsif @lameness_diagnostic_state==:othersigns
+      @state.current_state = :othersigns
+      elsif  @state.current_state == :othersigns
       program_ld_finished(message)
-      @lameness_diagnostic_state= :finished
-      elsif @lameness_diagnostic_state==:finished
+      @state.current_state = :finished
+      elsif  @state.current_state == :finished
       program_ld_summary(message)
-      @lameness_diagnostic_state= :corrections
+      @state.current_state = :corrections
 
       elsif message.include?("back")
         if @lameness_diagnostic_state == :history
