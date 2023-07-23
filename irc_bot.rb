@@ -1,19 +1,36 @@
 # customize the name of your bot on the following line
 require_relative './irc_bot_methods.rb'
+require_relative './irc_bot_classes.rb'
 
 @name = "EquineVetBot"
 
 @chosen_problem = :none
 @tree_level = 0
 @repetition_lameness = 0
-@horse_general_information
 @lameness_diagnostic_program = 0
 @lameness_diagnostic_state
+@horse_general_information
+@horse_history
+@horse_duration
+@horse_severity
+@horse_location
+@horse_routine
+@horse_environment
+@horse_hoofcare
+@horse_recentinjuries
+@horse_previoustherapy
+@horse_othersigns
+@corrector
+
 
 def handle_channel_message(message)
   if message.include?("return")
     @tree_level = 0
     @chosen_problem = :none
+    @repetition_lameness = 0
+  end
+  if @lameness_diagnostic_state==:corrections
+    check_for_corrections(message)
   end
   if @tree_level == 0
     p message.split[3]
@@ -37,11 +54,9 @@ def handle_channel_message(message)
     if @tree_level ==2 && message.downcase.include?("yes")
       colic_likely(message)
       @tree_level = 3
-    end
-    if @tree_level ==2 && message.downcase.include?("no")
+    elsif @tree_level ==2 && message.downcase.include?("no")
       colic_unlikely(message)
-    end
-    if @tree_level ==3 && message.downcase.include?("therapy")
+    elsif @tree_level ==3 && message.downcase.include?("therapy")
       colic_therapy(message)
     end
   end
@@ -54,35 +69,70 @@ def handle_channel_message(message)
     @repetition_lameness = 1
   end
   if @chosen_problem == :lameness
-     if @tree_level ==2  && (message.downcase.include?("program") == false || message.downcase.include?("diagnostic") == false) && (message.include?("information") == true ||@repetition_lameness == 2)
+    if @tree_level ==2  && (message.downcase.include?("program") == false || message.downcase.include?("diagnostic") == false) && (message.include?("information") == true ||@repetition_lameness == 2)
       lameness_information_quiz(message)
       @tree_level = 3
-    end
-    if @tree_level ==2 && (message.downcase.include?("program") || message.downcase.include?("diagnostic"))
+    elsif @tree_level ==2 && (message.downcase.include?("program") || message.downcase.include?("diagnostic"))
       program_lameness_diagnostic(message)
       @tree_level = 3
       @lameness_diagnostic_program = 1
-    end
-    if @tree_level ==3 && message.downcase.include?("pain")
+      @state = Diagnostic_state.new(:signalement)
+    elsif @tree_level ==3 && message.downcase.include?("pain")
       lameness_pain(message)
       @tree_level = 4
-    end
-    if @tree_level ==3 && (message.downcase.include?("mechanical") || message.downcase.include?("neurological"))
+    elsif @tree_level ==3 && (message.downcase.include?("mechanical") || message.downcase.include?("neurological"))
       lameness_wrong_answer(message)
       @tree_level = 2
       @repetition_lameness = 2
-    end
-    if  @lameness_diagnostic_program == 1
-      if @tree_level ==3 && (message.include?("diagnostic") == false || message.include?("program") == false)
-        program_ld_anamnesis(message)
-        @lameness_diagnostic_state= :general_information
-      end
-      if @lameness_diagnostic_program == 1 && message.include?("back")
-        program_lameness_diagnostic(message)
-      end
-      if @tree_level ==3  && (message.include?("diagnostic") == false || message.include?("program") == false)
-        program_ld_anamnesis(message)
-        @lameness_diagnostic_state= :general_information
+    
+    elsif @lameness_diagnostic_program == 1 && @tree_level ==3
+      if @state.current_state == :signalement #left off here, implementing class state feature
+        program_ld_history(message)
+        @state.current_state = :history
+      elsif @state.current_state == :history
+      program_ld_duration(message)
+      @state.current_state = :duration
+      elsif  @state.current_state == :duration
+      program_ld_severity(message)
+      @state.current_state = :severity
+      elsif  @state.current_state == :severity
+      program_ld_location(message)
+      @state.current_state = :location
+      elsif  @state.current_state == :location
+      program_ld_routine(message)
+      @state.current_state = :routine
+      elsif  @state.current_state == :routine
+      program_ld_environment(message)
+      @state.current_state = :environment
+      elsif  @state.current_state == :environment
+      program_ld_hoofcare(message)
+      @state.current_state = :hoofcare
+      elsif  @state.current_state == :hoofcare
+      program_ld_recentinjuries(message)
+      @state.current_state = :recentinjuries
+      elsif  @state.current_state == :recentinjuries
+      program_ld_previoustherapy(message)
+      @state.current_state = :previoustherapy
+      elsif  @state.current_state == :previoustherapy
+      program_ld_othersigns(message)
+      @state.current_state = :othersigns
+      elsif  @state.current_state == :othersigns
+      program_ld_finished(message)
+      @state.current_state = :finished
+      elsif  @state.current_state == :finished
+      program_ld_summary(message)
+      @state.current_state = :corrections
+
+      elsif message.include?("back")
+        if @lameness_diagnostic_state == :history
+          program_lameness_diagnostic(message)
+        elsif @lameness_diagnostic_state == :duration
+          program_ld_duration(message)
+        elsif @lameness_diagnostic_state == :duration
+          program_ld_duration(message)
+        end
+
+
       end
     end
   end
@@ -92,9 +142,6 @@ end
 
 
 require_relative './irc_magic.rb'
-
-
-#change if if if to elsif
 
 
 
