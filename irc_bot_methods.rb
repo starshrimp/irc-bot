@@ -278,7 +278,7 @@ def program_ld_summary(message)
   irc_send("PRIVMSG #rubymonstas :10: Previous therapy administered: #{@patient.previoustherapy}")
   irc_send("PRIVMSG #rubymonstas :11: Other signs and symptoms: #{@patient.othersigns}")
   sleep(1)
-  #irc_send("PRIVMSG #rubymonstas :If you'd like to correct one of your answers, enter the number of the incorrect information to correct it.") 
+  irc_send("PRIVMSG #rubymonstas :If you'd like to correct one of your answers, enter the number of the incorrect information to correct it.") 
   irc_send("PRIVMSG #rubymonstas :The lameness diagnostic program is now finished. Type start to go back to the start of the EquineBotProgram.")
   @state.finished = true
 end
@@ -311,11 +311,52 @@ def check_for_corrections(message)
   elsif @to_be_corrected.include?("11") 
     @state.current_state = 9
   end 
-  irc_send("PRIVMSG #rubymonstas :works") #to do: either enter something here or call on another method so it will happen straight after without any additional input or enter
-  
+  lameness_diagnostic_program(message)
   
   
   #next step: implementing that after entering corrections goes straight back to the end
 end
-# ###
-# #irc_send("PRIVMSG #rubymonstas :")
+
+def lameness_diagnostic_program(message)
+  if @state.current_state == 0 #left off here, implementing class state feature
+    program_ld_history(message)
+    @state.next
+    sleep(1)
+  elsif @state.current_state == 1
+    program_ld_duration(message)
+    @state.next
+  elsif  @state.current_state == 2
+    program_ld_severity(message)
+    @state.next
+  elsif  @state.current_state == 3
+    program_ld_location(message)
+    @state.next
+  elsif  @state.current_state == 4
+    program_ld_routine(message)
+    @state.next
+  elsif  @state.current_state == 5
+    program_ld_environment(message)
+    @state.next
+  elsif  @state.current_state == 6
+    program_ld_hoofcare(message)
+    @state.next
+  elsif  @state.current_state == 7
+    program_ld_recentinjuries(message)
+    @state.next
+  elsif  @state.current_state == 8
+    program_ld_previoustherapy(message)
+    @state.next
+  elsif  @state.current_state == 9
+    program_ld_othersigns(message)
+    @state.next
+  elsif  @state.current_state == 10
+    program_ld_finished(message)
+    @state.next
+  elsif  @state.current_state == 11
+    program_ld_summary(message)
+    @state.next
+  elsif @state.finished == true
+    @state.corrector =1 #run test whether this works!
+    check_for_corrections(message)
+  end
+end

@@ -8,7 +8,7 @@ require_relative './irc_bot_classes.rb'
 @tree_level = 0
 @repetition_lameness = 0
 @lameness_diagnostic_program = 0
-
+@state = Diagnostic_state.new(0)
 
 
 def handle_channel_message(message)
@@ -62,7 +62,7 @@ def handle_channel_message(message)
       program_lameness_diagnostic(message)
       @tree_level = 3
       @lameness_diagnostic_program = 1
-      @state = Diagnostic_state.new(0)
+      
     elsif @tree_level ==3 && message.downcase.include?("pain")
       lameness_pain(message)
       @tree_level = 4
@@ -145,10 +145,10 @@ def handle_channel_message(message)
       elsif  @state.current_state == 10
         program_ld_finished(message)
         @state.next
-      elsif  @state.current_state == 11
+      elsif  @state.current_state == 11 
         program_ld_summary(message)
         @state.next
-      elsif @state.finished == true
+      elsif @state.finished == true 
         @state.corrector =1 #run test whether this works!
         check_for_corrections(message)
       end
