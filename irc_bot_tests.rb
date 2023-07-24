@@ -15,6 +15,7 @@ class BotTest < Minitest::Test
   def setup
   end
   def test_back_to_start
+    message = "start now"
     if message.include?("start")
       assert(@tree_level == 0)
       assert(@chosen_problem == :none)
